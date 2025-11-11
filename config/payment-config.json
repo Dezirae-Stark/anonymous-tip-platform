@@ -1,0 +1,62 @@
+{
+  "displayName": "Anonymous Creator",
+  "message": "Support my work anonymously",
+  "paymentMethods": {
+    "bitcoin": {
+      "enabled": true,
+      "address": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+      "label": "Bitcoin (BTC)",
+      "note": "Most private when using a new address for each payment"
+    },
+    "lightning": {
+      "enabled": true,
+      "address": "lnurl1dp68gurn8ghj7um9wfmxjcm99e3k7mf0v9cxj0m385ekvcenxc6r2c35xvukxefcv5mkvv34x5ekzd3ev56nyd3hxqurzepexejxxepnxscrvwfnv9nxzcn9xq6xyefhvgcxxcmyxymnserxfq5fns",
+      "label": "Bitcoin Lightning",
+      "note": "Instant, low-fee payments with enhanced privacy"
+    },
+    "monero": {
+      "enabled": true,
+      "address": "4AdUndXHHZ6cfufTMvppY6JwXNouMBzSkbLYfpAV5Usx3skxNgYeYTRj5UzqtReoS44qo9mtmXCqY45DJ852K5Jv2684Rge",
+      "label": "Monero (XMR)",
+      "note": "Maximum privacy - transactions are untraceable by default"
+    },
+    "cash": {
+      "enabled": false,
+      "address": "",
+      "label": "Cash by Mail",
+      "note": "For maximum anonymity, send cash to a P.O. Box"
+    },
+    "venmo": {
+      "enabled": false,
+      "username": "",
+      "label": "Venmo",
+      "note": "⚠️ Lower privacy - Venmo may expose your real name and profile",
+      "link": "https://venmo.com/"
+    },
+    "cashapp": {
+      "enabled": true,
+      "username": "YourCashTag",
+      "label": "Cash App",
+      "note": "⚠️ Lower privacy - Cash App may expose your username and profile",
+      "link": "https://cash.app/$"
+    },
+    "paypal": {
+      "enabled": false,
+      "username": "",
+      "label": "PayPal",
+      "note": "⚠️ Lower privacy - PayPal links to your name and email address",
+      "link": "https://paypal.me/"
+    }
+  },
+  "privacy": {
+    "showQRCodes": true,
+    "allowCopyAddress": true,
+    "hideIPAddress": false,
+    "disableAnalytics": true
+  },
+  "styling": {
+    "theme": "dark",
+    "accentColor": "#00D9FF",
+    "logoUrl": ""
+  }
+}

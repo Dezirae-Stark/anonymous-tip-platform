@@ -1,0 +1,27 @@
+{
+  "name": "anonymous-tip-platform",
+  "version": "1.0.0",
+  "description": "Privacy-first anonymous tipping platform for content creators",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "privacy",
+    "anonymous",
+    "tipping",
+    "cryptocurrency",
+    "bitcoin",
+    "monero"
+  ],
+  "author": "Privacy Advocate",
+  "license": "MIT",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "devDependencies": {
+    "@expo/webpack-config": "^19.0.1",
+    "expo-cli": "^6.3.12"
+  }
+}

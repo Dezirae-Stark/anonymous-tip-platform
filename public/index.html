@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Anonymous Tips - Privacy First</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .privacy-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #00D9FF;
+        }
+
+        .privacy-badge::before {
+            content: "🔒";
+            margin-right: 8px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 16px;
+        }
+
+        .warning-box {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #FFC107;
+            padding: 16px;
+            margin: 30px 0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .warning-box strong {
+            color: #FFC107;
+        }
+
+        .payment-methods {
+            margin-top: 30px;
+        }
+
+        .payment-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .payment-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 217, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .payment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .payment-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .privacy-level {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .privacy-level.high {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .privacy-level.medium {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+        }
+
+        .privacy-level.low {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+        }
+
+        .address-container {
+            position: relative;
+            margin: 12px 0;
+        }
+
+        .address {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            color: #00D9FF;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            background: rgba(0, 217, 255, 0.2);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            color: #00D9FF;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 217, 255, 0.3);
+        }
+
+        .copy-btn.copied {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin-top: 16px;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .note {
+            font-size: 13px;
+            color: #888;
+            margin-top: 12px;
+            font-style: italic;
+        }
+
+        .payment-link-btn {
+            display: block;
+            background: linear-gradient(135deg, #00D9FF 0%, #0099CC 100%);
+            color: white;
+            text-align: center;
+            padding: 14px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 16px 0;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .payment-link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 217, 255, 0.3);
+        }
+
+        .username-display {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #00D9FF;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            text-align: center;
+            margin: 12px 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #666;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #00D9FF;
+            text-decoration: none;
+        }
+
+        .info-box {
+            background: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid #2196F3;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .info-box strong {
+            color: #2196F3;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .payment-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="privacy-badge">100% Anonymous & Private</div>
+            <h1 id="displayName">Loading...</h1>
+            <p class="subtitle" id="message">Loading...</p>
+        </div>
+
+        <div class="warning-box">
+            <strong>Privacy Protection:</strong> This page does not collect any personal information. Your payment details are never shared with the recipient beyond what your chosen payment method reveals. Choose cryptocurrency for maximum anonymity.
+        </div>
+
+        <div class="info-box">
+            <strong>Why this exists:</strong> Traditional payment platforms like Venmo and Cash App expose your real name, username, and transaction history to anyone who pays you. This platform uses privacy-focused payment methods that protect your identity.
+        </div>
+
+        <div class="payment-methods" id="paymentMethods">
+            <!-- Payment methods will be loaded here -->
+        </div>
+
+        <div class="footer">
+            <p>No tracking. No analytics. No data collection.</p>
+            <p style="margin-top: 10px;">Built for privacy-conscious creators</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        // Load configuration
+        async function loadConfig() {
+            try {
+                const response = await fetch('/config');
+                const config = await response.json();
+                displayPaymentMethods(config);
+            } catch (error) {
+                console.error('Error loading config:', error);
+                document.getElementById('displayName').textContent = 'Anonymous Creator';
+                document.getElementById('message').textContent = 'Support my work anonymously';
+            }
+        }
+
+        function displayPaymentMethods(config) {
+            document.getElementById('displayName').textContent = config.displayName;
+            document.getElementById('message').textContent = config.message;
+
+            const container = document.getElementById('paymentMethods');
+            container.innerHTML = '';
+
+            Object.entries(config.paymentMethods).forEach(([key, method]) => {
+                // Check if method is enabled and has either address or username
+                if (!method.enabled || (!method.address && !method.username)) return;
+
+                const card = document.createElement('div');
+                card.className = 'payment-card';
+
+                // Determine privacy level
+                let privacyLevel, privacyText;
+                if (key === 'monero') {
+                    privacyLevel = 'high';
+                    privacyText = 'High Privacy';
+                } else if (key === 'lightning' || key === 'bitcoin') {
+                    privacyLevel = 'high';
+                    privacyText = 'High Privacy';
+                } else if (key === 'venmo' || key === 'cashapp' || key === 'paypal') {
+                    privacyLevel = 'low';
+                    privacyText = 'Low Privacy';
+                } else {
+                    privacyLevel = 'medium';
+                    privacyText = 'Medium Privacy';
+                }
+
+                // Build payment link for username-based services
+                let paymentUrl = '';
+                if (method.username && method.link) {
+                    if (key === 'cashapp') {
+                        paymentUrl = `${method.link}${method.username}`;
+                    } else if (key === 'paypal') {
+                        paymentUrl = `${method.link}${method.username}`;
+                    } else if (key === 'venmo') {
+                        paymentUrl = `${method.link}${method.username}`;
+                    }
+                }
+
+                // Build card content based on payment type
+                let cardContent = `
+                    <div class="payment-header">
+                        <div class="payment-label">${method.label}</div>
+                        <div class="privacy-level ${privacyLevel}">${privacyText}</div>
+                    </div>
+                `;
+
+                // Username-based services (Venmo, CashApp, PayPal)
+                if (method.username) {
+                    cardContent += `
+                        <div class="username-display">@${method.username}</div>
+                        ${paymentUrl ? `<a href="${paymentUrl}" target="_blank" class="payment-link-btn">Open ${method.label} →</a>` : ''}
+                        ${config.privacy.showQRCodes && paymentUrl ? `<div class="qr-container"><canvas class="qr-code" id="qr-${key}"></canvas></div>` : ''}
+                    `;
+                }
+                // Address-based services (Crypto)
+                else if (method.address) {
+                    cardContent += `
+                        <div class="address-container">
+                            <div class="address" id="address-${key}">${method.address}</div>
+                            <button class="copy-btn" onclick="copyAddress('${key}', '${method.address}')">Copy</button>
+                        </div>
+                        ${config.privacy.showQRCodes ? `<div class="qr-container"><canvas class="qr-code" id="qr-${key}"></canvas></div>` : ''}
+                    `;
+                }
+
+                cardContent += method.note ? `<div class="note">${method.note}</div>` : '';
+
+                card.innerHTML = cardContent;
+                container.appendChild(card);
+
+                // Generate QR code
+                if (config.privacy.showQRCodes) {
+                    setTimeout(() => {
+                        const canvas = document.getElementById(`qr-${key}`);
+                        if (canvas) {
+                            const qrData = method.address || paymentUrl;
+                            if (qrData) {
+                                QRCode.toCanvas(canvas, qrData, {
+                                    width: 200,
+                                    margin: 2,
+                                    color: {
+                                        dark: '#000000',
+                                        light: '#ffffff'
+                                    }
+                                });
+                            }
+                        }
+                    }, 100);
+                }
+            });
+        }
+
+        function copyAddress(key, address) {
+            navigator.clipboard.writeText(address).then(() => {
+                const btn = document.querySelector(`#address-${key}`).parentElement.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy address. Please copy manually.');
+            });
+        }
+
+        // Load config on page load
+        loadConfig();
+    </script>
+</body>
+</html>
