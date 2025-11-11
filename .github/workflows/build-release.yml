@@ -1,0 +1,170 @@
+name: Build and Release Apps
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - android
+          - ios
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all'
+
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: npm
+          cache-dependency-path: mobile-app/package.json
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        working-directory: ./mobile-app
+        run: npm ci
+
+      - name: 🚀 Build Android APK
+        working-directory: ./mobile-app
+        run: eas build --platform android --profile preview --non-interactive --no-wait
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📥 Download APK
+        working-directory: ./mobile-app
+        run: |
+          BUILD_ID=$(eas build:list --platform android --limit 1 --json | jq -r '.[0].id')
+          echo "Waiting for build $BUILD_ID to complete..."
+          eas build:wait $BUILD_ID
+          eas build:download $BUILD_ID --output=./anonymous-tips.apk
+
+      - name: 📤 Upload APK to Release
+        uses: actions/upload-release-asset@v1
+        if: github.event_name == 'release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./mobile-app/anonymous-tips.apk
+          asset_name: AnonymousTips-${{ github.event.release.tag_name }}.apk
+          asset_content_type: application/vnd.android.package-archive
+
+      - name: 📤 Upload APK as Artifact
+        uses: actions/upload-artifact@v4
+        if: github.event_name != 'release'
+        with:
+          name: android-apk
+          path: ./mobile-app/anonymous-tips.apk
+          retention-days: 30
+
+  build-ios:
+    name: Build iOS App
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' || github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all'
+
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: npm
+          cache-dependency-path: mobile-app/package.json
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        working-directory: ./mobile-app
+        run: npm ci
+
+      - name: 🚀 Build iOS App
+        working-directory: ./mobile-app
+        run: eas build --platform ios --profile preview --non-interactive --no-wait
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📥 Download IPA
+        working-directory: ./mobile-app
+        run: |
+          BUILD_ID=$(eas build:list --platform ios --limit 1 --json | jq -r '.[0].id')
+          echo "Waiting for build $BUILD_ID to complete..."
+          eas build:wait $BUILD_ID
+          eas build:download $BUILD_ID --output=./anonymous-tips.ipa
+
+      - name: 📤 Upload IPA to Release
+        uses: actions/upload-release-asset@v1
+        if: github.event_name == 'release'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./mobile-app/anonymous-tips.ipa
+          asset_name: AnonymousTips-${{ github.event.release.tag_name }}.ipa
+          asset_content_type: application/octet-stream
+
+      - name: 📤 Upload IPA as Artifact
+        uses: actions/upload-artifact@v4
+        if: github.event_name != 'release'
+        with:
+          name: ios-ipa
+          path: ./mobile-app/anonymous-tips.ipa
+          retention-days: 30
+
+  create-checksums:
+    name: Create Checksums
+    runs-on: ubuntu-latest
+    needs: [build-android, build-ios]
+    if: github.event_name == 'release'
+
+    steps:
+      - name: 📥 Download Android APK
+        uses: actions/download-artifact@v4
+        with:
+          name: android-apk
+          path: ./builds
+
+      - name: 📥 Download iOS IPA
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-ipa
+          path: ./builds
+
+      - name: 🔐 Generate Checksums
+        run: |
+          cd builds
+          sha256sum *.apk *.ipa > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: 📤 Upload Checksums
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./builds/SHA256SUMS.txt
+          asset_name: SHA256SUMS.txt
+          asset_content_type: text/plain

@@ -1,0 +1,58 @@
+name: Build Apps (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build'
+        required: true
+        default: 'android'
+        type: choice
+        options:
+          - android
+          - ios
+          - both
+
+jobs:
+  build:
+    name: Build Mobile App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+
+      - name: 🏗 Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        working-directory: ./mobile-app
+        run: npm install
+
+      - name: 🚀 Build Android APK
+        if: github.event.inputs.platform == 'android' || github.event.inputs.platform == 'both'
+        working-directory: ./mobile-app
+        run: eas build --platform android --profile preview --non-interactive
+
+      - name: 🚀 Build iOS App
+        if: github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'both'
+        working-directory: ./mobile-app
+        run: eas build --platform ios --profile preview --non-interactive
+
+      - name: ✅ Build Started
+        run: |
+          echo "✅ Build(s) started successfully!"
+          echo "📱 Platform: ${{ github.event.inputs.platform }}"
+          echo "🔗 Check build status at: https://expo.dev"
+          echo ""
+          echo "Once complete, you can download from:"
+          echo "  - Expo dashboard"
+          echo "  - Or use: eas build:download"
