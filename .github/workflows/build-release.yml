@@ -51,7 +51,7 @@ jobs:
       - name: 📥 Download APK
         working-directory: ./mobile-app
         run: |
-          BUILD_ID=$(eas build:list --platform android --limit 1 --json | jq -r '.[0].id')
+          BUILD_ID=$(eas build:list --platform android --limit 1 --json --non-interactive | jq -r '.[0].id')
           echo "Waiting for build $BUILD_ID to complete..."
           eas build:wait $BUILD_ID
           eas build:download $BUILD_ID --output=./anonymous-tips.apk
@@ -110,7 +110,7 @@ jobs:
       - name: 📥 Download IPA
         working-directory: ./mobile-app
         run: |
-          BUILD_ID=$(eas build:list --platform ios --limit 1 --json | jq -r '.[0].id')
+          BUILD_ID=$(eas build:list --platform ios --limit 1 --json --non-interactive | jq -r '.[0].id')
           echo "Waiting for build $BUILD_ID to complete..."
           eas build:wait $BUILD_ID
           eas build:download $BUILD_ID --output=./anonymous-tips.ipa
