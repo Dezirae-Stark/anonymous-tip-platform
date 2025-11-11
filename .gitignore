@@ -52,7 +52,7 @@ __generated__
 *.apk
 
 # npm
-package-lock.json
+# Note: package-lock.json is needed for GitHub Actions CI/CD
 
 # Misc
 .env.local
