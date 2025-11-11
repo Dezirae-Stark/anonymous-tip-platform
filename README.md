@@ -14,7 +14,7 @@
 
 *Chief Architect & Developer*
 
-This entire platform was architected and designed by Dezirae Stark, created to solve the privacy problems inherent in traditional payment platforms like Venmo and Cash App.
+This entire platform was architecture designed upon request and created to solve the privacy problems inherent in traditional payment platforms like Venmo and Cash App.
 
 ---
 
