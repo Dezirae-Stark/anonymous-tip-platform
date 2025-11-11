@@ -42,19 +42,18 @@ jobs:
         working-directory: ./mobile-app
         run: npm ci
 
-      - name: 🚀 Build Android APK
-        working-directory: ./mobile-app
-        run: eas build --platform android --profile preview --non-interactive --no-wait
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
-      - name: 📥 Download APK
+      - name: 🚀 Build and Download Android APK
         working-directory: ./mobile-app
         run: |
+          # Start build and wait for completion
+          eas build --platform android --profile preview --non-interactive --wait
+          # Get the latest build ID
           BUILD_ID=$(eas build:list --platform android --limit 1 --json --non-interactive | jq -r '.[0].id')
-          echo "Waiting for build $BUILD_ID to complete..."
-          eas build:wait $BUILD_ID
-          eas build:download $BUILD_ID --output=./anonymous-tips.apk
+          echo "Downloading build $BUILD_ID..."
+          # Download the APK
+          eas build:view $BUILD_ID --json | jq -r '.artifacts.buildUrl' | xargs curl -L -o ./anonymous-tips.apk
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: 📤 Upload APK to Release
         uses: actions/upload-release-asset@v1
@@ -101,19 +100,18 @@ jobs:
         working-directory: ./mobile-app
         run: npm ci
 
-      - name: 🚀 Build iOS App
-        working-directory: ./mobile-app
-        run: eas build --platform ios --profile preview --non-interactive --no-wait
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-
-      - name: 📥 Download IPA
+      - name: 🚀 Build and Download iOS App
         working-directory: ./mobile-app
         run: |
+          # Start build and wait for completion
+          eas build --platform ios --profile preview --non-interactive --wait
+          # Get the latest build ID
           BUILD_ID=$(eas build:list --platform ios --limit 1 --json --non-interactive | jq -r '.[0].id')
-          echo "Waiting for build $BUILD_ID to complete..."
-          eas build:wait $BUILD_ID
-          eas build:download $BUILD_ID --output=./anonymous-tips.ipa
+          echo "Downloading build $BUILD_ID..."
+          # Download the IPA
+          eas build:view $BUILD_ID --json | jq -r '.artifacts.buildUrl' | xargs curl -L -o ./anonymous-tips.ipa
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: 📤 Upload IPA to Release
         uses: actions/upload-release-asset@v1
