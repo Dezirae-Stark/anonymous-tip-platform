@@ -1,10 +1,14 @@
-# 🔒 Anonymous Tipping Platform
+<div align="center">
+  <img src="assets/logo.png" alt="Anonymous Tips Logo" width="200"/>
 
-**Privacy-first anonymous tipping platform for content creators**
+  # 🔒 Anonymous Tipping Platform
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![Platform](https://img.shields.io/badge/platform-Web%20%7C%20Android%20%7C%20iOS-green)
-![License](https://img.shields.io/badge/license-MIT-orange)
+  **Privacy-first anonymous tipping platform for content creators**
+
+  ![Version](https://img.shields.io/badge/version-1.0.1-blue)
+  ![Platform](https://img.shields.io/badge/platform-Web%20%7C%20Android%20%7C%20iOS-green)
+  ![License](https://img.shields.io/badge/license-MIT-orange)
+</div>
 
 ---
 
