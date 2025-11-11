@@ -1,0 +1,25 @@
+#!/bin/bash
+
+echo "================================================"
+echo "WORKFLOW FILES FOR GITHUB"
+echo "================================================"
+echo ""
+echo "Copy these files to upload to GitHub:"
+echo ""
+echo "================================================"
+echo "FILE 1: .github/workflows/build-release.yml"
+echo "================================================"
+echo ""
+cat .github/workflows/build-release.yml
+echo ""
+echo ""
+echo "================================================"
+echo "FILE 2: .github/workflows/build-manual.yml"
+echo "================================================"
+echo ""
+cat .github/workflows/build-manual.yml
+echo ""
+echo "================================================"
+echo "Upload these via GitHub web interface at:"
+echo "https://github.com/Dezirae-Stark/anonymous-tip-platform"
+echo "================================================"
