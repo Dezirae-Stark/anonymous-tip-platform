@@ -42,7 +42,7 @@ jobs:
 
       - name: 📦 Install dependencies
         working-directory: ./mobile-app
-        run: npm install --legacy-peer-deps
+        run: npm ci
 
       - name: 🚀 Build and Download Android APK
         working-directory: ./mobile-app
@@ -102,7 +102,7 @@ jobs:
 
       - name: 📦 Install dependencies
         working-directory: ./mobile-app
-        run: npm install --legacy-peer-deps
+        run: npm ci
 
       - name: 🚀 Build and Download iOS App
         working-directory: ./mobile-app
