@@ -1,11 +1,5 @@
-import axios from 'axios';
-import * as SecureStore from 'expo-secure-store';
-
-// Configure your backend URL here
-// IMPORTANT: For real devices, you MUST use a real URL (not localhost)
-// For production: https://your-domain.com
-// For local testing on device: use your computer's local IP (e.g., http://192.168.1.100:3000)
-let API_BASE_URL = 'https://your-backend-url.com'; // Default - won't work, forces offline mode
+// Simple in-memory storage for offline mode
+const localTipPages = {};
 
 // Generate a random token
 const generateToken = () => {
@@ -15,26 +9,12 @@ const generateToken = () => {
 };
 
 const API = {
-  // Create a new tip page (offline mode - stores locally)
+  // Create a new tip page (offline mode - stores in memory)
   createTipPage: async (data) => {
-    try {
-      // Try backend first if URL is configured
-      if (API_BASE_URL && !API_BASE_URL.includes('your-backend-url')) {
-        const response = await axios.post(`${API_BASE_URL}/api/create-tip-page`, data, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          timeout: 5000,
-        });
-        return response.data;
-      }
-    } catch (error) {
-      console.log('Backend unavailable, using offline mode');
-    }
-
-    // Offline mode - store locally
+    // Offline mode only - store in memory
     const token = generateToken();
-    await SecureStore.setItemAsync(`tip_data_${token}`, JSON.stringify(data));
+    localTipPages[token] = data;
+
     return {
       success: true,
       token: token,
@@ -42,26 +22,14 @@ const API = {
     };
   },
 
-  // Get tip page data by token (offline mode - reads from local storage)
+  // Get tip page data by token (offline mode - reads from memory)
   getTipPage: async (token) => {
-    try {
-      // Try backend first if URL is configured
-      if (API_BASE_URL && !API_BASE_URL.includes('your-backend-url')) {
-        const response = await axios.get(`${API_BASE_URL}/api/tip/${token}`, {
-          timeout: 5000,
-        });
-        return response.data;
-      }
-    } catch (error) {
-      console.log('Backend unavailable, using offline mode');
-    }
-
-    // Offline mode - read from local storage
-    const data = await SecureStore.getItemAsync(`tip_data_${token}`);
+    // Offline mode - read from memory
+    const data = localTipPages[token];
     if (data) {
       return {
         success: true,
-        ...JSON.parse(data),
+        ...data,
         offline: true,
       };
     }
@@ -71,22 +39,27 @@ const API = {
     };
   },
 
-  // Get full tip page URL
-  getTipPageUrl: (token) => {
-    if (API_BASE_URL && !API_BASE_URL.includes('your-backend-url')) {
-      return `${API_BASE_URL}/tip/${token}`;
-    }
-    // In offline mode, return a shareable text format
-    return `Anonymous Tip Token: ${token}\n(Configure backend URL in app settings to get web links)`;
+  // Get all stored tip pages (for My Links screen)
+  getAllTipPages: () => {
+    return Object.keys(localTipPages).map(token => ({
+      token,
+      ...localTipPages[token],
+    }));
   },
 
-  // Configure API base URL (for settings)
+  // Get full tip page URL
+  getTipPageUrl: (token) => {
+    // In offline mode, return a shareable text format
+    return `Anonymous Tip Token: ${token}\n(This is an offline tip page - data stored locally on this device)`;
+  },
+
+  // Configure API base URL (for future use)
   setBaseUrl: (url) => {
-    API_BASE_URL = url;
+    // Not implemented in offline version
   },
 
   getBaseUrl: () => {
-    return API_BASE_URL;
+    return 'Offline Mode';
   },
 };
 

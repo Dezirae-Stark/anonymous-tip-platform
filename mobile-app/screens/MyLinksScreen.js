@@ -8,7 +8,6 @@ import {
   Alert,
   RefreshControl,
 } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
 import * as Clipboard from 'expo-clipboard';
 import API from '../utils/api';
 
@@ -20,30 +19,20 @@ export default function MyLinksScreen({ navigation }) {
     loadLinks();
   }, []);
 
-  const loadLinks = async () => {
+  const loadLinks = () => {
     try {
-      const allKeys = await SecureStore.getAllKeysAsync?.() || [];
-      const tipTokenKeys = allKeys.filter(key => key.startsWith('tip_token_'));
-
-      const linkPromises = tipTokenKeys.map(async (key) => {
-        const data = await SecureStore.getItemAsync(key);
-        return JSON.parse(data);
-      });
-
-      const loadedLinks = await Promise.all(linkPromises);
-      // Sort by creation date, newest first
-      loadedLinks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      setLinks(loadedLinks);
+      // Use the API's in-memory storage
+      const allTipPages = API.getAllTipPages();
+      setLinks(allTipPages);
     } catch (error) {
       console.error('Error loading links:', error);
-      // Fallback for systems without getAllKeysAsync
       setLinks([]);
     }
   };
 
-  const onRefresh = async () => {
+  const onRefresh = () => {
     setRefreshing(true);
-    await loadLinks();
+    loadLinks();
     setRefreshing(false);
   };
 
