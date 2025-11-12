@@ -1,65 +1,52 @@
-// Simple in-memory storage for offline mode
-const localTipPages = {};
+import axios from 'axios';
 
-// Generate a random token
-const generateToken = () => {
-  return Math.random().toString(36).substring(2, 15) +
-         Math.random().toString(36).substring(2, 15) +
-         Math.random().toString(36).substring(2, 15);
-};
+// Configure your backend URL here
+// For local testing: http://10.0.2.2:3000 (Android emulator)
+// For production: https://your-domain.com
+const API_BASE_URL = 'http://10.0.2.2:3000';
 
 const API = {
-  // Create a new tip page (offline mode - stores in memory)
+  // Create a new tip page
   createTipPage: async (data) => {
-    // Offline mode only - store in memory
-    const token = generateToken();
-    localTipPages[token] = data;
-
-    return {
-      success: true,
-      token: token,
-      offline: true,
-    };
-  },
-
-  // Get tip page data by token (offline mode - reads from memory)
-  getTipPage: async (token) => {
-    // Offline mode - read from memory
-    const data = localTipPages[token];
-    if (data) {
-      return {
-        success: true,
-        ...data,
-        offline: true,
-      };
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/create-tip-page`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Create tip page error:', error);
+      throw error;
     }
-    return {
-      success: false,
-      error: 'Tip page not found',
-    };
   },
 
-  // Get all stored tip pages (for My Links screen)
-  getAllTipPages: () => {
-    return Object.keys(localTipPages).map(token => ({
-      token,
-      ...localTipPages[token],
-    }));
+  // Get tip page data by token
+  getTipPage: async (token) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/tip/${token}`, {
+        timeout: 10000,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Get tip page error:', error);
+      throw error;
+    }
   },
 
   // Get full tip page URL
   getTipPageUrl: (token) => {
-    // In offline mode, return a shareable text format
-    return `Anonymous Tip Token: ${token}\n(This is an offline tip page - data stored locally on this device)`;
+    return `${API_BASE_URL}/tip/${token}`;
   },
 
-  // Configure API base URL (for future use)
+  // Configure API base URL (for settings)
   setBaseUrl: (url) => {
-    // Not implemented in offline version
+    API_BASE_URL = url;
   },
 
   getBaseUrl: () => {
-    return 'Offline Mode';
+    return API_BASE_URL;
   },
 };
 

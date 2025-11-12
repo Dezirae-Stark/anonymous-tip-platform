@@ -2,7 +2,7 @@
   "expo": {
     "name": "Anonymous Tips",
     "slug": "anonymous-tips",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.anonymoustips.app",
-      "buildNumber": "1.0.5",
+      "buildNumber": "1.0.6",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to scan QR codes for payments.",
         "NSPhotoLibraryUsageDescription": "This app needs access to save QR codes to your photo library."
@@ -25,7 +25,7 @@
     },
     "android": {
       "package": "com.anonymoustips.app",
-      "versionCode": 6,
+      "versionCode": 7,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#0f0f1e"
